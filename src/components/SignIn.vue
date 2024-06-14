@@ -1,8 +1,7 @@
-
 <script setup lang="ts">
-import { ref } from 'vue';
 import { useRouter } from 'vue-router';
-import { auth } from '../auth';
+import { ref } from 'vue';
+import { auth } from '../auth.ts';
 
 const router = useRouter();
 const email = ref('');
@@ -14,6 +13,9 @@ function onSubmit() {
   auth.signIn(email.value, password.value, () => {
     awaiting.value = false;
     router.push('/');
+  }, () => {
+    awaiting.value = false;
+    console.log('Login failed!');
   });
 }
 </script>
