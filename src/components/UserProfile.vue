@@ -15,7 +15,7 @@ const signOut = function() {
 <template>
   <main>
     <template v-if="isLoggedIn">
-      <h3>Hi, {{ currentUser.email }}</h3>
+      <h3>Hi, {{ currentUser && currentUser.email }}</h3>
       <br />
       <nav>
         <a @click="signOut">Sign Out</a>

@@ -8,7 +8,7 @@ const email = ref('');
 const password = ref('');
 const awaiting = ref(false);
 
-function onSubmit(form: Event) {
+function onSubmit() {
   awaiting.value = true;
   auth.signIn(email.value || '', password.value || '', () => {
     awaiting.value = false;
