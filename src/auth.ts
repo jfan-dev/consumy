@@ -1,65 +1,80 @@
-import { storage } from './storage.ts';
+import { createStorage, type SimpleStorage } from './storage';
 
-async function signIn(email: string, password: string, onSuccess: () => void, onFailure: () => void) {
-  const body = {
-    login: {
-      email: email,
-      password: password
-    }
-  };
+class Auth {
+  private storage: SimpleStorage;
 
-  const response = await fetch("http://localhost:3000/sign_in", {
-    method: "POST",
-    headers: {
-      "Accept": "application/json",
-      "Content-Type": "application/json"
-    },
-    body: JSON.stringify(body)
-  });
-
-  if (response.ok) {
-    success(response, onSuccess);
-  } else {
-    failure(response, onFailure);
+  constructor(persistent = false) {
+    this.storage = createStorage(persistent);
   }
-}
 
-function success(response: Response, onSuccess: () => void) {
-  response.json().then((json) => {
-    storage.store('token', json.token);
-    storage.store('email', json.email);
-    onSuccess();
-  });
-}
+  async signIn(email: string, password: string, onSuccess: () => void, onFailure: () => void) {
+    const body = {
+      login: {
+        email: email,
+        password: password,
+      },
+    };
 
-function failure(response: Response, onFailure: () => void) {
-  onFailure();
-}
+    const response = await fetch("http://localhost:3000/sign_in", {
+      method: "POST",
+      headers: {
+        "Accept": "application/json",
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(body),
+    });
 
-function isLoggedIn(): boolean {
-  return Boolean(storage.get('token'));
-}
+    if (response.ok) {
+      this.success(response, onSuccess);
+    } else {
+      this.failure(onFailure);
+    }
+  }
 
-function signOut(andThen: () => {}) {
-  storage.remove('token');
-  storage.remove('email');
-  if (typeof andThen === 'function') {
+  private success(response: Response, onSuccess: () => void) {
+    response.json().then((json) => {
+      this.storage.store('token', json.token);
+      this.storage.store('email', json.email);
+      onSuccess();
+    });
+  }
+
+  private failure(onFailure: () => void) {
+    onFailure();
+  }
+
+  isLoggedIn() {
+    return Boolean(this.getFallback('token'));
+  }
+
+  currentUser() {
+    if (!this.isLoggedIn()) {
+      return null;
+    }
+
+    return {
+      email: this.getFallback('email'),
+    };
+  }
+
+  private getFallback(key: string): string | null {
+    const transient = createStorage(false);
+    const persistent = createStorage(true);
+
+    return transient.get(key) || persistent.get(key);
+  }
+
+  signOut(andThen = () => {}) {
+    const transient = createStorage(false);
+    const persistent = createStorage(true);
+
+    transient.remove('token');
+    transient.remove('email');
+    persistent.remove('token');
+    persistent.remove('email');
+
     andThen();
   }
 }
 
-function currentUser() {
-  if (!isLoggedIn()) {
-    return null;
-  }
-  return {
-    email: storage.get('email')
-  };
-}
-
-export const auth = {
-  signIn,
-  isLoggedIn,
-  currentUser,
-  signOut
-};
+export { Auth };
