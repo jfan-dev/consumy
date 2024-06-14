@@ -35,3 +35,5 @@ interface SimpleStorage {
   get(key: string): string | null;
   remove(key: string): void;
 }
+
+export { createStorage, type SimpleStorage }
