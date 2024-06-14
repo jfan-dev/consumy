@@ -1,3 +1,4 @@
+import { createRouter, createWebHistory } from 'vue-router';
 import SignIn from '../components/SignIn.vue';
 import WelcomeView from '../views/WelcomeView.vue';
 
