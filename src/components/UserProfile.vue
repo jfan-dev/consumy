@@ -24,6 +24,7 @@ const signOut = function() {
     </template>
 
     <template v-else>
+      <h1>Welcome to Consumy</h1>
       <h3>Please log in to have access</h3>
       <br />
       <nav>
