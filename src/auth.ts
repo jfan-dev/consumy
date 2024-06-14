@@ -40,7 +40,7 @@ function isLoggedIn(): boolean {
   return Boolean(storage.get('token'));
 }
 
-function signOut(andThen: () => void = null) {
+function signOut(andThen: () => void =  () => {}) {
   storage.remove('token');
   storage.remove('email');
   if (typeof andThen === 'function') {
