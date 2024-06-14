@@ -1,15 +1,3 @@
-<template>
-  <div>
-    <h1>Sign In</h1>
-    <form @submit.prevent="onSubmit">
-      <label>E-Mail: </label>
-      <input v-model="email" type="email"><br />
-      <label>Password: </label>
-      <input v-model="password" type="password"><br />
-      <button type="submit" v-show="!awaiting">Sign In</button>
-    </form>
-  </div>
-</template>
 
 <script setup lang="ts">
 import { ref } from 'vue';
@@ -29,3 +17,16 @@ function onSubmit() {
   });
 }
 </script>
+
+<template>
+  <div>
+    <h1>Sign In</h1>
+    <form @submit.prevent="onSubmit">
+      <label>E-Mail: </label>
+      <input v-model="email" type="email"><br />
+      <label>Password: </label>
+      <input v-model="password" type="password"><br />
+      <button type="submit" v-show="!awaiting">Sign In</button>
+    </form>
+  </div>
+</template>
