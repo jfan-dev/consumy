@@ -20,6 +20,33 @@ class Auth {
       headers: {
         "Accept": "application/json",
         "Content-Type": "application/json",
+        "X-API-KEY": "Ammai6AWli/osATq1WzQWfbBi08="
+      },
+      body: JSON.stringify(body),
+    });
+
+    if (response.ok) {
+      this.success(response, onSuccess);
+    } else {
+      this.failure(onFailure);
+    }
+  }
+
+  async signUp(email: string, password: string, password_confirmation: string, onSuccess: () => void, onFailure: () => void) {
+    const body = {
+      user: {
+        email: email,
+        password: password,
+        password_confirmation: password_confirmation
+      },
+    };
+
+    const response = await fetch("http://localhost:3000/new", {
+      method: "POST",
+      headers: {
+        "Accept": "application/json",
+        "Content-Type": "application/json",
+        "X-API-KEY": "Ammai6AWli/osATq1WzQWfbBi08="
       },
       body: JSON.stringify(body),
     });
