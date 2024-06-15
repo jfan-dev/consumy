@@ -26,12 +26,16 @@ function onSubmit() {
   <div>
     <h1>Sign In</h1>
     <form @submit.prevent="onSubmit">
+    
       <label>E-Mail: </label>
       <input v-model="email" type="email"><br />
-      <label>Password: </label>
+    
+      <label>Senha: </label>
       <input v-model="password" type="password"><br />
+    
       <label>Remember Me: </label>
       <input v-model="remember" type="checkbox"><br />
+
       <button type="submit" v-show="!awaiting">Sign In</button>
     </form>
   </div>
