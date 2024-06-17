@@ -14,7 +14,7 @@ function onSubmit() {
   const auth = new Auth(remember.value);
   auth.signIn(email.value || '', password.value || '', () => {
     awaiting.value = false;
-    router.push('/');
+    router.push('/stores');
   }, () => {
     awaiting.value = false;
     console.log('Login failed!');
