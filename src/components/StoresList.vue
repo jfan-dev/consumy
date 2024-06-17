@@ -1,20 +1,23 @@
 <script setup lang="ts">
 import { ref, onMounted } from 'vue';
+import { Auth } from '@/auth';
 
 interface Store {
   id: number;
   name: string;
 }
+const auth = new Auth(true);
 
 const stores = ref<Store[]>([]);
 
 onMounted(async () => {
   try {
+    const token = auth.getToken();
     const response = await fetch('http://localhost:3000/stores', {
       headers: {
         'Accept': 'application/json',
         'X-API-KEY': import.meta.env.VITE_X_API_KEY,
-        'Authorization': 'Bearer YOUR_JWT_TOKEN'
+        'Authorization': `Bearer ${token}`
       }
     });
     if (response.ok) {
