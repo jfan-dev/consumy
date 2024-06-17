@@ -15,7 +15,7 @@ function onSubmit() {
   const auth = new Auth(remember.value);
   auth.signUp(email.value || '', password.value || '', password_confirmation.value || '', () => {
     awaiting.value = false;
-    router.push('/');
+    router.push('/stores');
   }, () => {
     awaiting.value = false;
     console.log('Sign Up failed!');
@@ -42,15 +42,10 @@ function onSubmit() {
         <h2>Crie sua Conta</h2>
 
         <form @submit.prevent="onSubmit">
-          <label for="fullname">Nome Completo</label>
-          <input v-model="name" type="text" id="fullname" name="fullname" required>
-
+          
           <label for="email">Email</label>
           <input v-model="email" type="email" id="email" name="email" required>
-
-          <label for="username">Usuário</label>
-          <input type="text" id="username" name="username" required>
-
+          
           <label for="password">Senha</label>
           <input v-model="password" type="password" name="password" required>
           
