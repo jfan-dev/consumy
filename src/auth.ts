@@ -106,6 +106,31 @@ class Auth {
 
     andThen();
   }
+
+  async addToCart(productId: number, quantity: number, onSuccess: () => void, onFailure: () => void) {
+    const body = {
+      product_id: productId,
+      quantity: quantity
+    };
+
+    const token = this.getToken();
+    const response = await fetch("http://localhost:3000/carts/add_item", {
+      method: "POST",
+      headers: {
+        "Accept": "application/json",
+        "Content-Type": "application/json",
+        "X-API-KEY": import.meta.env.VITE_X_API_KEY,
+        "Authorization": `Bearer ${token}`
+      },
+      body: JSON.stringify(body),
+    });
+
+    if (response.ok) {
+      onSuccess();
+    } else {
+      onFailure();
+    }
+  }
 }
 
 export { Auth };
