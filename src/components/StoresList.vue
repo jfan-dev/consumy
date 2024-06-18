@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { ref, onMounted } from 'vue'
+import { ref, computed, onMounted } from 'vue'
 import { Auth } from '@/auth'
 
 interface Store {
@@ -9,8 +9,9 @@ interface Store {
 
 const auth = new Auth(true)
 const stores = ref<Store[]>([])
+const sortOrder = ref('asc')
 
-onMounted(async () => {
+const fetchStores = async () => {
   try {
     const token = auth.getToken()
     const response = await fetch('http://localhost:3000/stores', {
@@ -28,14 +29,31 @@ onMounted(async () => {
   } catch (error) {
     console.error('Error fetching stores:', error)
   }
+}
+
+const sortedStores = computed(() => {
+  return [...stores.value].sort((a, b) => {
+    if (sortOrder.value === 'asc') {
+      return a.name.localeCompare(b.name)
+    } else {
+      return b.name.localeCompare(a.name)
+    }
+  })
 })
+
+onMounted(fetchStores)
 </script>
 
 <template>
   <div>
     <h1>Stores</h1>
+    <label for="sort-order">Sort by:</label>
+    <select id="sort-order" v-model="sortOrder">
+      <option value="asc">A-Z</option>
+      <option value="desc">Z-A</option>
+    </select>
     <ul>
-      <li v-for="store in stores" :key="store.id">
+      <li v-for="store in sortedStores" :key="store.id">
         <router-link :to="{ name: 'store-products', params: { id: store.id } }">
           {{ store.name }}
         </router-link>
@@ -51,5 +69,8 @@ ul {
 }
 li {
   margin: 0.5rem 0;
+}
+select {
+  margin-bottom: 10px;
 }
 </style>
