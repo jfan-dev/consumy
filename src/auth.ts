@@ -1,4 +1,5 @@
 import { createStorage, type SimpleStorage } from './storage';
+import router from './router'
 
 class Auth {
   private storage: SimpleStorage;
@@ -103,7 +104,7 @@ class Auth {
     transient.remove('email');
     persistent.remove('token');
     persistent.remove('email');
-
+    router.push({ name: 'welcome' });
     andThen();
   }
 
