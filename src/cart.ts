@@ -1,3 +1,4 @@
+// src/cart.ts
 class Cart {
   private storageKey: string;
 
@@ -5,17 +6,21 @@ class Cart {
     this.storageKey = 'cart';
   }
 
-  getCart() {
+  getCart(storeId: number) {
     const cart = localStorage.getItem(this.storageKey);
-    return cart ? JSON.parse(cart) : { items: [] };
+    const cartData = cart ? JSON.parse(cart) : {};
+    return cartData[storeId] || { items: [] };
   }
 
-  saveCart(cart: any) {
-    localStorage.setItem(this.storageKey, JSON.stringify(cart));
+  saveCart(storeId: number, cart: any) {
+    const allCarts = localStorage.getItem(this.storageKey);
+    const cartData = allCarts ? JSON.parse(allCarts) : {};
+    cartData[storeId] = cart;
+    localStorage.setItem(this.storageKey, JSON.stringify(cartData));
   }
 
-  addItem(product: any, quantity: number) {
-    const cart = this.getCart();
+  addItem(storeId: number, product: any, quantity: number) {
+    const cart = this.getCart(storeId);
     const existingItem = cart.items.find((item: any) => item.product.id === product.id);
 
     if (existingItem) {
@@ -24,31 +29,34 @@ class Cart {
       cart.items.push({ product, quantity });
     }
 
-    this.saveCart(cart);
+    this.saveCart(storeId, cart);
   }
 
-  removeItem(productId: number) {
-    const cart = this.getCart();
+  removeItem(storeId: number, productId: number) {
+    const cart = this.getCart(storeId);
     cart.items = cart.items.filter((item: any) => item.product.id !== productId);
-    this.saveCart(cart);
+    this.saveCart(storeId, cart);
   }
 
-  updateQuantity(productId: number, quantity: number) {
-    const cart = this.getCart();
+  updateQuantity(storeId: number, productId: number, quantity: number) {
+    const cart = this.getCart(storeId);
     const existingItem = cart.items.find((item: any) => item.product.id === productId);
 
     if (existingItem) {
       existingItem.quantity = quantity;
       if (existingItem.quantity <= 0) {
-        this.removeItem(productId);
+        this.removeItem(storeId, productId);
       } else {
-        this.saveCart(cart);
+        this.saveCart(storeId, cart);
       }
     }
   }
 
-  clearCart() {
-    this.saveCart({ items: [] });
+  clearCart(storeId: number) {
+    const allCarts = localStorage.getItem(this.storageKey);
+    const cartData = allCarts ? JSON.parse(allCarts) : {};
+    delete cartData[storeId];
+    localStorage.setItem(this.storageKey, JSON.stringify(cartData));
   }
 }
 

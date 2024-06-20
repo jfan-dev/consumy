@@ -76,9 +76,11 @@ const showModal = ref(false);
 const selectedProduct = ref<Product | null>(null);
 const quantity = ref(1);
 
+const storeId = router.currentRoute.value.params.id;
+
 const fetchProducts = async () => {
   const token = auth.getToken();
-  const response = await fetch(`http://localhost:3000/stores/${router.currentRoute.value.params.id}/products`, {
+  const response = await fetch(`http://localhost:3000/stores/${storeId}/products`, {
     headers: {
       'Accept': 'application/json',
       'X-API-KEY': import.meta.env.VITE_X_API_KEY,
@@ -117,16 +119,16 @@ const decreaseQuantity = () => {
 
 const addToCartAndStay = () => {
   if (selectedProduct.value) {
-    Cart.addItem(selectedProduct.value, quantity.value);
+    Cart.addItem(storeId, selectedProduct.value, quantity.value);
     closeModal();
   }
 };
 
 const addToCartAndGo = () => {
   if (selectedProduct.value) {
-    Cart.addItem(selectedProduct.value, quantity.value);
+    Cart.addItem(storeId, selectedProduct.value, quantity.value);
     closeModal();
-    router.push({ name: 'cart' });
+    router.push({ name: 'cart', params: { storeId: storeId } });
   }
 };
 

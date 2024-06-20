@@ -1,6 +1,6 @@
 <template>
   <div>
-    <h1>Your Cart</h1>
+    <h1>Your Cart for Store {{ storeId }}</h1>
     <ul v-if="cart.items.length > 0">
       <li v-for="item in cart.items" :key="item.product.id">
         {{ item.product.title }} - {{ item.quantity }} x {{ item.product.price }}
@@ -13,10 +13,10 @@
     <p v-else>Your cart is empty.</p>
     <div v-if="cart.items.length > 0">
       <p>Total: {{ total }}</p>
-      <button @click="continueBuying">Continue Buying</button>
       <button @click="clearCart">Clear Cart</button>
+      <button @click="checkout">Checkout</button>
     </div>
-    <button @click="checkout">Checkout</button>
+    <button @click="continueBuying">Continue Buying</button>
   </div>
 </template>
 
@@ -27,33 +27,29 @@ import Cart from '@/cart';
 
 const cart = ref({ items: [] });
 const router = useRouter();
+const storeId = router.currentRoute.value.params.storeId;
 
 const fetchCart = () => {
-  cart.value = Cart.getCart();
+  cart.value = Cart.getCart(storeId);
 };
 
 const updateQuantity = (productId: number, quantity: number) => {
-  Cart.updateQuantity(productId, quantity);
+  Cart.updateQuantity(storeId, productId, quantity);
   fetchCart();
 };
 
 const removeItem = (productId: number) => {
-  Cart.removeItem(productId);
+  Cart.removeItem(storeId, productId);
   fetchCart();
 };
 
 const clearCart = () => {
-  Cart.clearCart();
+  Cart.clearCart(storeId);
   fetchCart();
 };
 
 const continueBuying = () => {
-  const storeId = cart.value.items[0]?.product.store_id; // Assuming each product has a store_id
-  if (storeId) {
-    router.push({ name: 'store-products', params: { id: storeId } });
-  } else {
-    alert('No store associated with the cart items.');
-  }
+  router.push({ name: 'store-products', params: { id: storeId } });
 };
 
 const checkout = () => {
