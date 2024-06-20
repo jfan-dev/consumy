@@ -14,30 +14,57 @@ const signOut = function() {
 </script>
 
 <template>
-  <header>
-    <div class="container">
+   <main>
+    
+  </main>
 
-      <div class="flex">
+  <header>
+      <div class="flex container">
         <div class="logo">
           <img src="../assets/imgs/chefzilla-logo-nome.png" alt="">
         </div>
 
         <nav>
-          <ul class="flex">
-            <!-- TODO adicionar links -->
-            <li><a href="#">Lançamento</a></li>
-            <li><a href="#">Para lojistas</a></li>
-            <li><a href="#">Contato</a></li>
-          </ul>
+
+          <template v-if="isLoggedIn">
+            <ul class="flex">
+              <li><a href="/">Home</a></li>
+              <li><a href="/stores">Restaurants</a></li>
+              <li><a href="#">Promotion</a></li>
+              <li><a href="#">Favorites</a></li>
+            </ul>
+          </template>
+
+          <template v-else>
+            <ul class="flex">
+              <li><a href="#">Lançamento</a></li>
+              <li><a href="#">Para lojistas</a></li>
+              <li><a href="#">Contato</a></li>
+            </ul>
+            </template>
+            
         </nav>
 
         <div class="buttons">
-          <a href="/signup"><button class="btn-primary">Cadastre-se</button></a>
-          <a href="/signin"><button class="btn-secondary">Login</button></a>
+          <template v-if="isLoggedIn">
+            <nav>
+              <a @click="signOut"><button class="btn-secondary">Sign Out</button></a>
+            </nav>
+          </template>
+          <template v-else>
+            <nav>
+              <RouterLink :to="{name: 'signin'}">
+                <a href="/signin"><button class="btn-secondary">Login</button></a>
+              </RouterLink>
+
+              <RouterLink :to="{name: 'signup'}">
+                <a href="/signup"><button class="btn-primary">Cadastre-se</button></a>
+              </RouterLink>
+            </nav>
+          </template>
         </div>
       </div>
 
-    </div>
   </header>
 
   <section class="hero">
@@ -162,37 +189,24 @@ const signOut = function() {
     </div>
   </footer>
 
-  <!-- <main>
-    <template v-if="isLoggedIn">
-      <h3>Hi, {{ currentUser && currentUser.email }}</h3>
-      <br />
-      <nav>
-        <a @click="signOut">Sign Out</a>
-      </nav>
-    </template>
-    <template v-else>
-      <h3>Please log in to have access</h3>
-      <br />
-      <nav>
-        <RouterLink :to="{name: 'signin'}">
-          Sign In
-        </RouterLink>
-
-        <RouterLink :to="{name: 'signup'}">
-          Sign Up
-        </RouterLink>
-      </nav>
-    </template>
-  </main> -->
+ 
 </template>
 
 <style>
 /* header */
-header {
-  background: var(--red);
-}
 
-header .flex {
+header {
+    background-color: var(--red);
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+    color: white;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 20px;
+  }
+  
+  header .flex {
+  width: 100%;
   align-items: center;
   justify-content: space-between;
 }

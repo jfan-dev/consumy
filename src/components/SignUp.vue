@@ -66,6 +66,7 @@ function onSubmit() {
 </template>
 
 <style>
+
 .register-container {
   background: white;
   display: flex;

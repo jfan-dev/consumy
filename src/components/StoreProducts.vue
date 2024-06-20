@@ -1,8 +1,10 @@
 <template>
   <header>
-    <div class="logo">
-      <img src="../../../assets/chefzilla-logo-nome.png" alt="Chefzilla Logo">
-    </div>
+    <div class="container flex">
+
+      <div class="logo">
+        <img src="../assets/imgs/chefzilla-logo-nome.png" alt="Chefzilla Logo">
+      </div>
     <nav>
       <ul>
         <li><a href="/">Home</a></li>
@@ -13,16 +15,17 @@
     </nav>
     <div class="user-info">
       <button @click="signOut" class="btn-primary">Logout</button>
-                <!-- <span>R. Dr. José Marcelino, 83</span> -->
-                <!-- <span>R$ 0,00</span> -->
     </div>
+  </div>
   </header>
+
 
   <main class="container">
     <h1>{{ storeName }}</h1>
     <div class="menu">
       <div class="menu-item" v-for="product in products" :key="product.id">
         <div class="item-details">
+          <img src="../assets/pratos/sushi.png" alt="">
           <h2>{{ product.title }}</h2>
           <p>Descrição do prato delicioso e apetitoso.</p>
           <p class="price">R$ {{ product.price }}</p>
@@ -164,6 +167,79 @@ onMounted(() => {
 </script>
 
 <style scoped>
+
+header {
+    background-color: var(--red);
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+  }
+  
+  header .container {
+    color: white;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 20px;
+  }
+  
+  .logo img {
+    height: 40px;
+  }
+  
+  nav ul {
+    list-style: none;
+    display: flex;
+    gap: 20px;
+    padding: 0;
+    margin: 0;
+  }
+  
+  nav ul li a {
+    text-decoration: none;
+    font-weight: bold;
+    color: white;
+  }
+  
+  .user-info {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+  }
+
+header {
+    background-color: var(--red);
+    color: white;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 20px;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+  }
+  
+  .logo img {
+    height: 40px;
+  }
+  
+  nav ul {
+    list-style: none;
+    display: flex;
+    gap: 20px;
+    padding: 0;
+    margin: 0;
+  }
+  
+  nav ul li a {
+    text-decoration: none;
+    font-weight: bold;
+    color: white;
+  }
+  
+  .user-info {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+  }
+  
+
 .menu {
     display: flex;
     flex-wrap: wrap;

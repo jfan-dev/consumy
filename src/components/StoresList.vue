@@ -53,27 +53,28 @@ onMounted(fetchStores)
 
 <template>
   <header>
-            <div class="logo">
-                <img src="../../../assets/chefzilla-logo-nome.png" alt="Chefzilla Logo">
-            </div>
-            <nav>
+    <div class="flex container">
+
+      <div class="logo">
+        <img src="../assets/imgs/chefzilla-logo-nome.png" alt="Chefzilla Logo">
+      </div>
+      <nav>
                 <ul>
-                    <li><a href="/">Home</a></li>
-                    <li><a href="/stores">Restaurants</a></li>
-                    <li><a href="#">Promotion</a></li>
-                    <li><a href="#">Favorites</a></li>
-                </ul>
+                  <li><a href="/">Home</a></li>
+                <li><a href="/stores">Restaurants</a></li>
+                <li><a href="#">Promotion</a></li>
+                <li><a href="#">Favorites</a></li>
+              </ul>
             </nav>
             <div class="user-info">
               <button @click="signOut" class="btn-primary">Logout</button>
-                <!-- <span>R. Dr. José Marcelino, 83</span> -->
-                <!-- <span>R$ 0,00</span> -->
             </div>
+          </div>
           </header>
           
           <main class="container">
 
-            <section class="categories">
+            <section class="stores">
                 <h2>Stores</h2>
                 <label for="sort-order">Sort by:</label>
                 <select id="sort-order" v-model="sortOrder">
@@ -81,23 +82,9 @@ onMounted(fetchStores)
                   <option value="desc">Z-A</option>
                 </select>
                 <ul class="new-list">
-                    <li class="new-item" v-for="store in sortedStores" :key="store.id">
-                        <router-link :to="{ name: 'store-products', params: { id: store.id } }">
-                            {{ store.name }}
-                        </router-link>
-                    </li>
-                    <li class="new-item" v-for="store in sortedStores" :key="store.id">
-                        <router-link :to="{ name: 'store-products', params: { id: store.id } }">
-                            {{ store.name }}
-                        </router-link>
-                    </li>
-                    <li class="new-item" v-for="store in sortedStores" :key="store.id">
-                        <router-link :to="{ name: 'store-products', params: { id: store.id } }">
-                            {{ store.name }}
-                        </router-link>
-                    </li>
-                    <li class="new-item" v-for="store in sortedStores" :key="store.id">
-                        <router-link :to="{ name: 'store-products', params: { id: store.id } }">
+                  <li class="new-item" v-for="store in sortedStores" :key="store.id">
+                    <router-link :to="{ name: 'store-products', params: { id: store.id } }">
+                      <img src="../assets/pratos/sushi.png" alt="">
                             {{ store.name }}
                         </router-link>
                     </li>
@@ -106,29 +93,29 @@ onMounted(fetchStores)
 
             <section class="categories">
               <h2>Categories</h2>
-              <div class="category-list">
-                  <div class="category-item">
-                      <img src="../../../assets/pratos/burguer.png" alt="Lanches">
+              <div class="new-list">
+                  <div class="new-item">
+                      <img src="../assets/pratos/burguer.png" alt="Lanches">
                       <p>Burguers</p>
                   </div>
-                  <div class="category-item">
-                      <img src="../../../assets/pratos/pizza.png" alt="Pizza">
+                  <div class="new-item">
+                      <img src="../assets/pratos/pizza.png" alt="Pizza">
                       <p>Pizza</p>
                   </div>
-                  <div class="category-item">
-                      <img src="../../../assets/pratos/sushi.png" alt="Japonesa">
+                  <div class="new-item">
+                      <img src="../assets/pratos/sushi.png" alt="Japonesa">
                       <p>Sushi</p>
                   </div>
-                  <div class="category-item">
-                      <img src="../../../assets/pratos/feijoada.png" alt="Brasileira">
+                  <div class="new-item">
+                      <img src="../assets/pratos/feijoada.png" alt="Brasileira">
                       <p>Brazilian</p>
                   </div>
-                  <div class="category-item">
-                      <img src="../../../assets/pratos/bolo.png" alt="Doces & Bolos">
+                  <div class="new-item">
+                      <img src="../assets/pratos/bolo.png" alt="Doces & Bolos">
                       <p>Sweets and cakes</p>
                   </div>
-                  <div class="category-item">
-                      <img src="../../../assets/pratos/acai.png" alt="Açaí">
+                  <div class="new-item">
+                      <img src="../assets/pratos/acai.png" alt="Açaí">
                       <p>Brazilian Açaí</p>
                   </div>
               </div>
@@ -157,21 +144,21 @@ onMounted(fetchStores)
           
             <section class="recommended-dishes">
                 <h2>The best of the chef</h2>
-                <div class="dish-list">
-                    <div class="dish-item">
-                        <img src="../../../assets/pratos/acai.png" alt="Açaí Suprasumo">
+                <div class="new-list">
+                    <div class="new-item">
+                        <img src="../assets/pratos/acai.png" alt="Açaí Suprasumo">
                         <p>Açaí Suprasumo</p>
                     </div>
-                    <div class="dish-item">
-                        <img src="../../../assets/pratos/bolo.png" alt="Chocolatudo da Má">
+                    <div class="new-item">
+                        <img src="../assets/pratos/bolo.png" alt="Chocolatudo da Má">
                         <p>Chocolatudo of the Má</p>
                     </div>
-                    <div class="dish-item">
-                        <img src="../../../assets/pratos/sushi.png" alt="Combo mix japan">
+                    <div class="new-item">
+                        <img src="../assets/pratos/sushi.png" alt="Combo mix japan">
                         <p>Combo mix japan</p>
                     </div>
-                    <div class="dish-item">
-                        <img src="../../../assets/pratos/burguer.png" alt="Suculencia King">
+                    <div class="new-item">
+                        <img src="../assets/pratos/burguer.png" alt="Suculencia King">
                         <p>Suculent King</p>
                     </div>
                 </div>
@@ -185,6 +172,41 @@ onMounted(fetchStores)
 </template>
 
 <style scoped>
+
+header {
+    background-color: var(--red);
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+    color: white;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 20px;
+  }
+  
+  .logo img {
+    height: 40px;
+  }
+  
+  nav ul {
+    list-style: none;
+    display: flex;
+    gap: 20px;
+    padding: 0;
+    margin: 0;
+  }
+  
+  nav ul li a {
+    text-decoration: none;
+    font-weight: bold;
+    color: white;
+  }
+  
+  .user-info {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+  }
+
 header {
     background-color: var(--red);
     color: white;
@@ -219,6 +241,7 @@ header {
     align-items: flex-end;
   }
   
+
   section {
     margin-bottom: 30px;
   }
@@ -235,16 +258,18 @@ header {
     color: #ff4b2b;
   }
   
-  .category-list, .promo-list, .restaurant-list, .new-list, .dish-list {
+  .new-list {
     display: flex;
-    
     gap: 10px;
     overflow-x: auto;
     padding: 10px 0;
-    justify-content: center;
+  }
+
+  .stores .new-item {
+    min-width: 150px;
   }
   
-  .category-item, .promo-item, .restaurant-item, .new-item, .dish-item {
+  .new-item {
     background-color: #f4f4f4;
     padding: 10px;
     border-radius: 10px;
@@ -252,7 +277,7 @@ header {
     flex: 1 1 calc(25% - 20px);
   }
   
-  .category-item img, .promo-item img, .restaurant-item img, .new-item img, .dish-item img {
+  .new-item img {
     height: 150px;
     width: 100%;
     object-fit: cover;
@@ -271,66 +296,4 @@ header {
     color: #777;
   }
   
-
-  /* RESET */
-
-  * {
-    padding: 0;
-    margin: 0;
-    box-sizing: border-box;
-    font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
-  }
-  
-  .flex {
-    display: flex;
-  }
-  
-  .container {
-    max-width: 1140px;
-    padding: 20px;
-    margin: auto;
-  }
-  
-  :root {
-    --red: #bb0404;
-    --orange: #f6ac32;
-    --azul: #3f8a9c;
-  }
-  
-  button {
-   padding: 10px 20px;
-   border-radius: 10px;
-   border: none;
-   margin: 5px;
-   text-transform: uppercase;
-   font-weight: 700;
-   cursor: pointer;
-  }
-  
-  
-  .btn-primary {
-    background-color: white;
-  }
-  
-  .btn-primary:hover {
-    background-color: var(--orange);
-  }
-  
-  .btn-secondary {
-    background-color: var(--orange);
-  }
-  
-  .btn-secondary:hover {
-    background-color: var(--azul);
-  }
-  
-  h1 {
-    font-size: 40px;
-}
-
-h2 {
-    border-bottom: 2px solid var(--orange);
-    margin-bottom: 10px;
-    padding-bottom: 5px;
-  }
 </style>
