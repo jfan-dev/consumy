@@ -1,58 +1,60 @@
 <template>
   <header>
-            <div class="logo">
-                <img src="../../../assets/chefzilla-logo-nome.png" alt="Chefzilla Logo">
-            </div>
-            <nav>
-                <ul>
-                    <li><a href="/">Home</a></li>
-                    <li><a href="/stores">Restaurants</a></li>
-                    <li><a href="#">Promotion</a></li>
-                    <li><a href="#">Favorites</a></li>
-                </ul>
-            </nav>
-            <div class="user-info">
-              <button @click="signOut" class="btn-primary">Logout</button>
+    <div class="logo">
+      <img src="../../../assets/chefzilla-logo-nome.png" alt="Chefzilla Logo">
+    </div>
+    <nav>
+      <ul>
+        <li><a href="/">Home</a></li>
+        <li><a href="/stores">Restaurants</a></li>
+        <li><a href="#">Promotion</a></li>
+        <li><a href="#">Favorites</a></li>
+      </ul>
+    </nav>
+    <div class="user-info">
+      <button @click="signOut" class="btn-primary">Logout</button>
                 <!-- <span>R. Dr. José Marcelino, 83</span> -->
                 <!-- <span>R$ 0,00</span> -->
-            </div>
-          </header>
-          
-          <main class="container">
+    </div>
+  </header>
 
-            <h1>{{ storeName }}</h1>
-            <div class="menu">
-                <div class="menu-item" v-for="product in products" :key="product.id">
-                    <!-- <img src="assets/pratos/burguer.png" alt="Nome do Prato"> -->
-                    <div class="item-details">
-                        <h2>{{ product.title }}</h2>
-                        <p>Descrição do prato delicioso e apetitoso.</p>
-                        <p class="price">R$ {{ product.price }}</p>
-                        <button @click="showQuantityModal(product)" class="add-to-cart">Adicionar ao Carrinho</button>
-                    </div>
-                </div>
-            </div>
-          </main>
-          
-          <footer>
-            <p>© 2024 Chefzilla. Todos os direitos reservados.</p>
-          </footer>
-
-          <div v-if="showModal" class="modal">
-      <div class="modal-content">
-        <h2>Quantidade para <br>{{ selectedProduct?.title }}</h2>
-        <div class="quantity-selector">
-          <button @click="decreaseQuantity">-</button>
-          <span>{{ quantity }}</span>
-          <button @click="increaseQuantity">+</button>
+  <main class="container">
+    <h1>{{ storeName }}</h1>
+    <div class="menu">
+      <div class="menu-item" v-for="product in products" :key="product.id">
+        <div class="item-details">
+          <h2>{{ product.title }}</h2>
+          <p>Descrição do prato delicioso e apetitoso.</p>
+          <p class="price">R$ {{ product.price }}</p>
+          <button @click="showQuantityModal(product)" class="add-to-cart">Adicionar ao Carrinho</button>
         </div>
-        <div class="modal-buttons">
-          <button @click="addToCartAndStay">Comprar mais</button>
-          <button @click="addToCartAndGo">Ir para o Carrinho</button>
-        </div>
-        <button class="close" @click="closeModal">X</button>
       </div>
     </div>
+    <div class="pagination">
+      <button @click="prevPage" :disabled="currentPage === 1">Previous</button>
+      <button @click="nextPage" :disabled="currentPage === totalPages">Next</button>
+    </div>
+  </main>
+  
+  <footer>
+    <p>© 2024 Chefzilla. Todos os direitos reservados.</p>
+  </footer>
+
+  <div v-if="showModal" class="modal">
+    <div class="modal-content">
+      <h2>Quantidade para <br>{{ selectedProduct?.title }}</h2>
+      <div class="quantity-selector">
+        <button @click="decreaseQuantity">-</button>
+        <span>{{ quantity }}</span>
+        <button @click="increaseQuantity">+</button>
+      </div>
+      <div class="modal-buttons">
+        <button @click="addToCartAndStay">Comprar mais</button>
+        <button @click="addToCartAndGo">Ir para o Carrinho</button>
+      </div>
+      <button class="close" @click="closeModal">X</button>
+    </div>
+  </div>
 </template>
 
 <script setup lang="ts">
@@ -68,9 +70,11 @@ interface Product {
 }
 
 const auth = new Auth(true);
-const isLoggedIn = ref(auth.isLoggedIn())
+const isLoggedIn = ref(auth.isLoggedIn());
 const products = ref<Product[]>([]);
 const storeName = ref('');
+const currentPage = ref(1);
+const totalPages = ref(1);
 const router = useRouter();
 
 const showModal = ref(false);
@@ -79,9 +83,9 @@ const quantity = ref(1);
 
 const storeId = router.currentRoute.value.params.id;
 
-const fetchProducts = async () => {
+const fetchProducts = async (page = 1) => {
   const token = auth.getToken();
-  const response = await fetch(`http://localhost:3000/stores/${storeId}/products`, {
+  const response = await fetch(`http://localhost:3000/stores/${storeId}/products?page=${page}`, {
     headers: {
       'Accept': 'application/json',
       'X-API-KEY': import.meta.env.VITE_X_API_KEY,
@@ -92,6 +96,8 @@ const fetchProducts = async () => {
     const data = await response.json();
     products.value = data.result.products;
     storeName.value = data.result.store.name;
+    currentPage.value = data.result.pagination.current;
+    totalPages.value = data.result.pagination.pages;
   } else {
     console.error('Failed to fetch products');
   }
@@ -135,9 +141,22 @@ const addToCartAndGo = () => {
 
 const signOut = function() {
   auth.signOut(() => {
-    isLoggedIn.value = auth.isLoggedIn()
-  })
-}
+    isLoggedIn.value = auth.isLoggedIn();
+    router.push('/'); // Redirect to home page after sign out
+  });
+};
+
+const prevPage = () => {
+  if (currentPage.value > 1) {
+    fetchProducts(currentPage.value - 1);
+  }
+};
+
+const nextPage = () => {
+  if (currentPage.value < totalPages.value) {
+    fetchProducts(currentPage.value + 1);
+  }
+};
 
 onMounted(() => {
   fetchProducts();
@@ -391,4 +410,31 @@ h2 {
     margin-bottom: 10px;
     padding-bottom: 5px;
   }
+
+  /* PAGINATION STYLE */
+.pagination {
+  display: flex;
+  justify-content: center;
+  margin-top: 20px;
+}
+
+.pagination button {
+  background-color: #D32F2F;
+  color: white;
+  border: none;
+  padding: 10px;
+  cursor: pointer;
+  border-radius: 4px;
+  transition: background-color 0.3s;
+  margin: 0 5px;
+}
+
+.pagination button:disabled {
+  background-color: #e0e0e0;
+  cursor: not-allowed;
+}
+
+.pagination button:hover:not(:disabled) {
+  background-color: #b71c1c;
+}
 </style>
