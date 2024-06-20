@@ -5,14 +5,14 @@
             </div>
             <nav>
                 <ul>
-                    <li><a href="#">Home</a></li>
+                    <li><a href="/">Home</a></li>
                     <li><a href="/stores">Restaurants</a></li>
                     <li><a href="#">Promotion</a></li>
                     <li><a href="#">Favorites</a></li>
                 </ul>
             </nav>
             <div class="user-info">
-                <button class="btn-primary">Logout</button>
+              <button @click="signOut" class="btn-primary">Logout</button>
                 <!-- <span>R. Dr. José Marcelino, 83</span> -->
                 <!-- <span>R$ 0,00</span> -->
             </div>
@@ -68,6 +68,7 @@ interface Product {
 }
 
 const auth = new Auth(true);
+const isLoggedIn = ref(auth.isLoggedIn())
 const products = ref<Product[]>([]);
 const storeName = ref('');
 const router = useRouter();
@@ -131,6 +132,12 @@ const addToCartAndGo = () => {
     router.push({ name: 'cart', params: { storeId: storeId, storeName: storeName.value } });
   }
 };
+
+const signOut = function() {
+  auth.signOut(() => {
+    isLoggedIn.value = auth.isLoggedIn()
+  })
+}
 
 onMounted(() => {
   fetchProducts();

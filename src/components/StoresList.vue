@@ -8,6 +8,7 @@ interface Store {
 }
 
 const auth = new Auth(true)
+const isLoggedIn = ref(auth.isLoggedIn())
 const stores = ref<Store[]>([])
 const sortOrder = ref('asc')
 
@@ -41,6 +42,12 @@ const sortedStores = computed(() => {
   })
 })
 
+const signOut = function() {
+  auth.signOut(() => {
+    isLoggedIn.value = auth.isLoggedIn()
+  })
+}
+
 onMounted(fetchStores)
 </script>
 
@@ -51,14 +58,14 @@ onMounted(fetchStores)
             </div>
             <nav>
                 <ul>
-                    <li><a href="#">Home</a></li>
+                    <li><a href="/">Home</a></li>
                     <li><a href="/stores">Restaurants</a></li>
                     <li><a href="#">Promotion</a></li>
                     <li><a href="#">Favorites</a></li>
                 </ul>
             </nav>
             <div class="user-info">
-                <button class="btn-primary">Logout</button>
+              <button @click="signOut" class="btn-primary">Logout</button>
                 <!-- <span>R. Dr. José Marcelino, 83</span> -->
                 <!-- <span>R$ 0,00</span> -->
             </div>
