@@ -1,113 +1,73 @@
 <template>
   <div>
     <h1>Your Cart</h1>
-    <ul>
-      <li v-for="item in cartItems" :key="item.id">
-        {{ item.product.title }} - {{ item.quantity }} x {{ item.price }}
-        <button @click="removeFromCart(item.product.id)">Remove</button>
+    <ul v-if="cart.items.length > 0">
+      <li v-for="item in cart.items" :key="item.product.id">
+        {{ item.product.title }} - {{ item.quantity }} x {{ item.product.price }}
+        <button @click="updateQuantity(item.product.id, item.quantity - 1)">-</button>
+        <span>{{ item.quantity }}</span>
+        <button @click="updateQuantity(item.product.id, item.quantity + 1)">+</button>
+        <button @click="removeItem(item.product.id)">Remove</button>
       </li>
     </ul>
-    <div>
-      <h2>Total: {{ total }}</h2>
-      <button @click="checkout">Checkout</button>
+    <p v-else>Your cart is empty.</p>
+    <div v-if="cart.items.length > 0">
+      <p>Total: {{ total }}</p>
+      <button @click="continueBuying">Continue Buying</button>
+      <button @click="clearCart">Clear Cart</button>
     </div>
+    <button @click="checkout">Checkout</button>
   </div>
 </template>
 
 <script setup lang="ts">
-import { ref, onMounted } from 'vue';
-import { Auth } from '@/auth';
+import { ref, onMounted, computed } from 'vue';
+import { useRouter } from 'vue-router';
+import Cart from '@/cart';
 
-interface Product {
-  id: number;
-  title: string;
-  price: number;
-}
+const cart = ref({ items: [] });
+const router = useRouter();
 
-interface OrderItem {
-  id: number;
-  product: Product;
-  quantity: number;
-  price: number;
-}
+const fetchCart = () => {
+  cart.value = Cart.getCart();
+};
 
-interface Cart {
-  order_items: OrderItem[];
-}
+const updateQuantity = (productId: number, quantity: number) => {
+  Cart.updateQuantity(productId, quantity);
+  fetchCart();
+};
 
-const cartItems = ref<OrderItem[]>([]);
-const total = ref<number>(0);
-const auth = new Auth(true);
+const removeItem = (productId: number) => {
+  Cart.removeItem(productId);
+  fetchCart();
+};
 
-const fetchCart = async () => {
-  try {
-    const token = auth.getToken();
-    const response = await fetch('http://localhost:3000/carts', {
-      headers: {
-        'Accept': 'application/json',
-        'X-API-KEY': import.meta.env.VITE_X_API_KEY,
-        'Authorization': `Bearer ${token}`
-      }
-    });
-    if (response.ok) {
-      const data = await response.json();
-      cartItems.value = data.order_items;
-      total.value = data.order_items.reduce((sum, item) => sum + item.price * item.quantity, 0);
-    } else {
-      console.error('Failed to fetch cart');
-    }
-  } catch (error) {
-    console.error('Error fetching cart:', error);
+const clearCart = () => {
+  Cart.clearCart();
+  fetchCart();
+};
+
+const continueBuying = () => {
+  const storeId = cart.value.items[0]?.product.store_id; // Assuming each product has a store_id
+  if (storeId) {
+    router.push({ name: 'store-products', params: { id: storeId } });
+  } else {
+    alert('No store associated with the cart items.');
   }
 };
 
-const removeFromCart = async (productId: number) => {
-  try {
-    const token = auth.getToken();
-    const response = await fetch('http://localhost:3000/carts/remove_item', {
-      method: 'DELETE',
-      headers: {
-        'Accept': 'application/json',
-        'Content-Type': 'application/json',
-        'X-API-KEY': import.meta.env.VITE_X_API_KEY,
-        'Authorization': `Bearer ${token}`
-      },
-      body: JSON.stringify({ product_id: productId })
-    });
-    if (response.ok) {
-      fetchCart();
-    } else {
-      console.error('Failed to remove item from cart');
-    }
-  } catch (error) {
-    console.error('Error removing item from cart:', error);
-  }
+const checkout = () => {
+  // Future implementation for checkout functionality
+  alert('Checkout functionality will be implemented in the future.');
 };
 
-const checkout = async () => {
-  try {
-    const token = auth.getToken();
-    const response = await fetch('http://localhost:3000/carts/checkout', {
-      method: 'POST',
-      headers: {
-        'Accept': 'application/json',
-        'Content-Type': 'application/json',
-        'X-API-KEY': import.meta.env.VITE_X_API_KEY,
-        'Authorization': `Bearer ${token}`
-      }
-    });
-    if (response.ok) {
-      alert('Order placed successfully');
-      fetchCart();
-    } else {
-      console.error('Failed to checkout');
-    }
-  } catch (error) {
-    console.error('Error during checkout:', error);
-  }
-};
+const total = computed(() => {
+  return cart.value.items.reduce((sum, item) => sum + (item.product.price * item.quantity), 0).toFixed(2);
+});
 
-onMounted(fetchCart);
+onMounted(() => {
+  fetchCart();
+});
 </script>
 
 <style scoped>
@@ -117,8 +77,11 @@ ul {
 }
 li {
   margin: 0.5rem 0;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
 }
 button {
-  margin-left: 1rem;
+  margin: 5px;
 }
 </style>
