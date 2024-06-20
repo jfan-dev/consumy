@@ -1,6 +1,6 @@
 <template>
   <div>
-    <h1>Your Cart for Store {{ storeId }}</h1>
+    <h1>Your Cart for {{ storeName }}</h1>
     <ul v-if="cart.items.length > 0">
       <li v-for="item in cart.items" :key="item.product.id">
         {{ item.product.title }} - {{ item.quantity }} x {{ item.product.price }}
@@ -22,12 +22,14 @@
 
 <script setup lang="ts">
 import { ref, onMounted, computed } from 'vue';
-import { useRouter } from 'vue-router';
+import { useRouter, useRoute } from 'vue-router';
 import Cart from '@/cart';
 
 const cart = ref({ items: [] });
 const router = useRouter();
-const storeId = router.currentRoute.value.params.storeId;
+const route = useRoute();
+const storeId = route.params.storeId;
+const storeName = route.params.storeName;
 
 const fetchCart = () => {
   cart.value = Cart.getCart(storeId);

@@ -128,7 +128,7 @@ const addToCartAndGo = () => {
   if (selectedProduct.value) {
     Cart.addItem(storeId, selectedProduct.value, quantity.value);
     closeModal();
-    router.push({ name: 'cart', params: { storeId: storeId } });
+    router.push({ name: 'cart', params: { storeId: storeId, storeName: storeName.value } });
   }
 };
 
