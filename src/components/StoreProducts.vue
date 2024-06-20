@@ -6,7 +6,7 @@
             <nav>
                 <ul>
                     <li><a href="#">Home</a></li>
-                    <li><a href="/restaurantes">Restaurants</a></li>
+                    <li><a href="/stores">Restaurants</a></li>
                     <li><a href="#">Promotion</a></li>
                     <li><a href="#">Favorites</a></li>
                 </ul>
