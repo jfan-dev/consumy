@@ -126,12 +126,14 @@
 import { ref, onMounted, computed } from 'vue';
 import { useRouter, useRoute } from 'vue-router';
 import Cart from '@/cart';
+import { Auth } from '@/auth'
 
 const cart = ref({ items: [] });
 const router = useRouter();
 const route = useRoute();
 const storeId = route.params.storeId;
 const storeName = route.params.storeName;
+const auth = new Auth(true)
 
 const fetchCart = () => {
   cart.value = Cart.getCart(storeId);
@@ -156,9 +158,30 @@ const continueBuying = () => {
   router.push({ name: 'store-products', params: { id: storeId } });
 };
 
-const checkout = () => {
-  // Future implementation for checkout functionality
-  alert('Checkout functionality will be implemented in the future.');
+const checkout = async () => {
+  const token = auth.getToken();
+  const items = cart.value.items.map(item => ({
+    product_id: item.product.id,
+    quantity: item.quantity
+  }));
+
+  const response = await fetch('http://localhost:3000/orders', {
+    method: 'POST',
+    headers: {
+      'Accept': 'application/json',
+      'Content-Type': 'application/json',
+      'X-API-KEY': import.meta.env.VITE_X_API_KEY,
+      'Authorization': `Bearer ${token}`
+    },
+    body: JSON.stringify({ order: { store_id: storeId, order_items_attributes: items } })
+  });
+
+  if (response.ok) {
+    alert('Order placed successfully!');
+    clearCart();
+  } else {
+    alert('Failed to place order');
+  }
 };
 
 const total = computed(() => {
